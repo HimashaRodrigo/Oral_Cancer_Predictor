@@ -1,0 +1,11 @@
+{
+  "name": "oral_cancer_predictor",
+  "version": "1.0.0",
+  "description": "This project is Machine Learning cancer prediction system.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Himasha Rodrigo",
+  "license": "ISC"
+}
