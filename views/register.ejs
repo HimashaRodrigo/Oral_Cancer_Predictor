@@ -1,0 +1,60 @@
+<%- include("partials/loginsHeader"); -%>
+
+<div class="form-container">
+  <div class="login-form">
+    <form id="registrationForm" action="" method="get">
+      <h3>Register Now</h3>
+      <input type="text" name="name" required placeholder="Enter your name" required>
+      <input type="email" name="email" required placeholder="Enter your email" required>
+      <input type="password" id="password" name="password" required placeholder="Enter new password" required>
+      <input type="password" id="cpassword" name="cpassword" required placeholder="Confirm your password" required>
+      <button type="submit" class="btn btn-secondary btn-lg btn-block big-btn">Register Now</button>
+    </form>
+
+    <div class="social-buttons">
+      <a href="#" class="btn-sm social-button">
+        <img src="/images/logins/google_login.jpg" alt="Google Logo" class="social-logo">
+      </a>
+
+      <a href="#" class="btn-sm social-button">
+        <img src="/images/logins/facebook_login.jpg" alt="Facebook Logo" class="social-logo">
+      </a>
+    </div>
+
+    <div class="redirect-to">
+      <p>Already have an account? <a href="login.html">Login now</a></p>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $("#registrationForm").submit(function(event) {
+      var password = $("#password").val();
+      var cpassword = $("#cpassword").val();
+
+      if (password !== cpassword) {
+        alert("You enterd password do not match with confirm password");
+        event.preventDefault();
+        return;
+      }
+
+      // Check password complexity (at least 4 characters, 1 upper case, 1 numeric)
+      var passwordRegex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+      if (!passwordRegex.test(password)) {
+        alert("Password must be at least 4 characters long and contain at least one upper case letter and one numeric digit (ex: Pass1)");
+        event.preventDefault();
+        return;
+      }
+    });
+  });
+</script>
+
+</body>
+
+</html>
