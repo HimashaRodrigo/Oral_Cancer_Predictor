@@ -2,104 +2,106 @@
 
 <div class="container form-body">
 
-    <div class="section no-pad-bot" id="index-banner">
-        <div class="container">
-            <br><br>
-            <h1 class="text-center">Let's Check Your Cancer Propability</h1>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <br><br>
+      <h1 class="text-center">Let's Check Your Cancer Propability</h1>
 
-            <div class="row">
-                <form action='/predict' method="post" class="col-md-8 offset-md-2">
+      <div class="row">
+        <form action='/predict' method="post" class="col-md-8 offset-md-2">
 
-                    <div class="form-row ro">
+          <div class="form-row ro">
 
-                        <div class="form-group col-md-4">
-                            <label for="input1"><b>Give your Gender</b></label>
-                            <input placeholder="1 Or 0" name="input1" id="input1" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input2"><b>Give your Age</b></label>
-                            <input id="input2" name="input2" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you smoke ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you eat betel nuts ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you use alcohol ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Does your mouth smell bad ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Does the mouth somtimes bleeding ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you have red or white patches in your mouth ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you have lumps in your neack ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you somtimes feel pain in your mouth ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you somtimes feel numbness in your mouth ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you feel a burning sensation in your mouth ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you have any painless ulcers ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Do you suffer from swallowing difficulties ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="input3"><b>Have your appetite decreased significantly ?</b></label>
-                            <input id="input3" name="input3" placeholder="1 Or 0" type="text" class="form-control">
-                        </div>
-
-                    </div>
-
-
-                    <div class="row justify-content-center">
-                        <button type="submit" class="btn btn-secondary btn-lg">Predict Probability</button>
-                    </div>
-                </form>
+            <div class="form-group col-md-4">
+              <label for="input1"><b>Give your Gender</b></label>
+              <input placeholder="1 Or 0" name="GENDER" id="input1" type="text" class="form-control">
             </div>
 
-            <br/> {{pred}} <br/>
-            <br><br>
-        </div>
+            <div class="form-group col-md-4">
+              <label for="input2"><b>Give your Age</b></label>
+              <input id="input2" name="AGE" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input3"><b>Do you smoke ?</b></label>
+              <input id="input3" name="SMOKING" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input4"><b>Do you eat betel nuts ?</b></label>
+              <input id="input4" name="BETEL" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input5"><b>Do you use alcohol ?</b></label>
+              <input id="input5" name="ALCOHOL" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input6"><b>Does your mouth smell bad ?</b></label>
+              <input id="input6" name="BAD_BREATH" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input7"><b>Does the mouth somtimes bleeding ?</b></label>
+              <input id="input7" name="SUDDEN_BLEEDING" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input8"><b>Do you have red or white patches in your mouth ?</b></label>
+              <input id="input8" name="READ_WHITE_PATCH" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input9"><b>Do you have lumps in your neack ?</b></label>
+              <input id="input9" name="NECK_LUMP" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input10"><b>Do you somtimes feel pain in your mouth ?</b></label>
+              <input id="input10" name="PAIN" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input11"><b>Do you somtimes feel numbness in your mouth ?</b></label>
+              <input id="input11" name="NUMBNESS" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input12"><b>Do you feel a burning sensation in your mouth ?</b></label>
+              <input id="input12" name="BURNING_SENSATION" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input13"><b>Do you have any painless ulcers ?</b></label>
+              <input id="input13" name="PAINLESS_ULCERATION" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input14"><b>Do you suffer from swallowing difficulties ?</b></label>
+              <input id="input14" name="SWALLOWING_DIFFICULTY" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="input15"><b>Have your appetite decreased significantly ?</b></label>
+              <input id="input15" name="LOSS_APPETITE" placeholder="1 Or 0" type="text" class="form-control">
+            </div>
+
+          </div>
+
+
+          <div class="row justify-content-center">
+            <button type="submit" class="btn btn-secondary btn-lg">Predict Probability</button>
+          </div>
+        </form>
+      </div>
+
+      <br>
+        <%= pred %>
+       <br>
+      <br><br>
     </div>
+  </div>
 </div>
 
 <%- include("partials/footer"); -%>
