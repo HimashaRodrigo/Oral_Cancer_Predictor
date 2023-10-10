@@ -1,18 +1,114 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const { spawn } = require('child_process');
+const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+// const FacebookStrategy = require("passport-facebook").Strategy;
+const findOrCreate = require("mongoose-findorcreate");
 
 const app = express();
 
-app.set('view engine', 'ejs');
-
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(session({
+  secret: "MyPassLittleSceret",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1800000,
+    expires: new Date(Date.now() + 1800000)
+  }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+mongoose.connect("mongodb://localhost:27017/userDataBase", {useNewUrlParser:true});
+// mongoose.set("useCreateIndex", true);
+
+const userSchema = new mongoose.Schema( {
+  name: String,
+  username: String,
+  password: String
+});
+
+userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(findOrCreate);
+
+const User = new mongoose.model("User", userSchema);
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+// passport.deserializeUser(function(id, done) {
+//   User.findById(id, function(err, user) {
+//     done(err, user);
+//   });
+// });
+
+passport.deserializeUser(async function(id, done) {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
+
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/secret",
+    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
+// app.use(session({
+//   secret: "MyStrongSecretPassword",
+//   resave: false,
+//   saveUninitialized: false
+// }));
+//
+//
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// app.get("/", (req, res) => {
+//   res.render("home");
+// });
 
 app.get("/", (req, res) => {
-  res.render("home");
+  console.log("Currently not developed");
 });
+
+
+//google account login
+app.get("/auth/google", (req, res) => {
+  return passport.authenticate("google", { scope: ["profile"] })(req, res);
+});
+
+
+app.get("/auth/google/secret",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  function(req, res) {
+    res.redirect("/home");
+  });
 
 app.get("/login", (req, res) => {
   res.render("login");
@@ -22,21 +118,99 @@ app.get("/register", (req, res) => {
   res.render("register");
 });
 
-app.get("/diagnosis", (req, res) => {
-  res.render("diagnosis");
+app.get("/home", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.render("home");
+  } else {
+    res.redirect("/login");
+  }
 });
 
-app.get("/consultancy", (req, res) => {
-  res.render("consultancy");
+app.post("/register", (req, res) => {
+
+  User.register({name: req.body.name, username: req.body.username}, req.body.cpassword, function(err, user){
+    if(err){
+      console.log(err);
+      res.redirect("/register");
+    }else{
+      passport.authenticate("local")(req, res, function(){
+        res.redirect("/home");
+      });
+    }
+  });
 });
 
-app.get("/doctors", (req, res) => {
-  res.render("doctors");
+// app.post("/login", (req, res) => {
+//
+//   const user = new User({
+//     username: req.body.username,
+//     password: req.body.password
+//   });
+//
+//   req.login(user, (err) => {
+//     if(err){
+//       console.log(err);
+//     }else if(user){
+//       passport.authenticate("local") (req, res, () => {
+//         res.redirect("/home");
+//       });
+//     } else if(!user){
+//       res.redirect("/login");
+//     }
+//   });
+// });
+
+app.post("/login", (req, res) => {
+  const user = new User({
+    username: req.body.username,
+    password: req.body.password
+  });
+
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      console.log(err);
+    }
+
+    if (!user) {
+      return res.render("login", { error: "Invalid username or password" });
+    }
+
+    req.login(user, (err) => {
+      if (err) {
+        console.log(err);
+        return res.redirect("/login");
+      }else{
+        res.redirect("/home");
+      }
+
+    });
+
+  })(req, res);
+
 });
 
-app.get("/predict", (req, res) => {
-  res.render("predict", { pred: "" });
-});
+
+
+// app.post("/login", async (req, res) => {
+//
+// });
+
+
+// app.get("/diagnosis", (req, res) => {
+//   res.render("diagnosis");
+// });
+//
+// app.get("/consultancy", (req, res) => {
+//   res.render("consultancy");
+// });
+//
+// app.get("/doctors", (req, res) => {
+//   res.render("doctors");
+// });
+//
+// app.get("/predict", (req, res) => {
+//     res.render("predict", { pred: "" });
+// });
 
 app.post("/predict", async (req, res) => {
   try {
