@@ -98,7 +98,7 @@ app.get("/", (req, res) => {
 });
 
 
-//google account login
+
 app.get("/auth/google", (req, res) => {
   return passport.authenticate("google", { scope: ["profile"] })(req, res);
 });
@@ -124,6 +124,52 @@ app.get("/home", (req, res) => {
   } else {
     res.redirect("/login");
   }
+});
+
+app.get("/diagnosis", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.render("diagnosis");
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/consultancy", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.render("consultancy");
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/doctors", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.render("doctors");
+  } else {
+    res.redirect("/login");
+  }
+});
+
+// app.get("/predict", (req, res) => {
+//   if (req.isAuthenticated()) {
+//     res.render("predict", { pred: "" });
+//   } else {
+//     res.redirect("/login");
+//   }
+// });
+
+app.get("/predict", (req, res, next) => {
+  res.render("predict", { pred: "" });
+});
+
+
+app.get("/logout", (req, res, next) => {
+  req.logout((err)=> {
+    if (err) {
+       return next(err);
+     }
+    res.redirect('/login');
+  });
 });
 
 app.post("/register", (req, res) => {
@@ -213,27 +259,43 @@ app.post("/login", (req, res) => {
 // });
 
 app.post("/predict", async (req, res) => {
-  try {
 
-    const inputFeatures = [
-      parseInt(req.body.GENDER),
-      parseInt(req.body.AGE),
-      parseInt(req.body.SMOKING),
-      parseInt(req.body.BETEL),
-      parseInt(req.body.ALCOHOL),
-      parseInt(req.body.BAD_BREATH),
-      parseInt(req.body.SUDDEN_BLEEDING),
-      parseInt(req.body.READ_WHITE_PATCH),
-      parseInt(req.body.NECK_LUMP),
-      parseInt(req.body.PAIN),
-      parseInt(req.body.NUMBNESS),
-      parseInt(req.body.BURNING_SENSATION),
-      parseInt(req.body.PAINLESS_ULCERATION),
-      parseInt(req.body.SWALLOWING_DIFFICULTY),
-      parseInt(req.body.LOSS_APPETITE)
-    ];
+try {
 
-    const inputArray = inputFeatures;
+  const inputFeatures = [req.body.GENDER, req.body.AGE, req.body.SMOKING, req.body.BETEL,
+    req.body.ALCOHOL, req.body.BAD_BREATH, req.body.SUDDEN_BLEEDING, req.body.READ_WHITE_PATCH,
+    req.body.NECK_LUMP, req.body.PAIN, req.body.NUMBNESS, req.body.BURNING_SENSATION, req.body.PAINLESS_ULCERATION,
+     req.body.SWALLOWING_DIFFICULTY, req.body.LOSS_APPETITE];
+
+
+  let inputArray = [];
+  let ageValue;
+
+  for (let i = 0; i < inputFeatures.length; i++) {
+    switch (inputFeatures[i]) {
+      case "male":
+        inputArray.push(1);
+        break;
+
+      case "female":
+        inputArray.push(0);
+        break;
+
+      case "yes":
+        inputArray.push(2);
+        break;
+
+      case "no":
+        inputArray.push(1);
+        break;
+
+      default:
+        ageValue = inputFeatures[i];
+        ageValue = parseInt(ageValue, 10);
+        inputArray.push(ageValue);
+        break;
+    }
+  }
 
     const prediction = await predictUsingPythonScript(inputArray);
 
