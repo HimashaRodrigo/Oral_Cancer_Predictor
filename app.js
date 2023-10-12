@@ -31,13 +31,40 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 mongoose.connect("mongodb://localhost:27017/userDataBase", {useNewUrlParser:true});
-// mongoose.set("useCreateIndex", true);
 
-const userSchema = new mongoose.Schema( {
+
+const userSchema = new mongoose.Schema({
   name: String,
   username: String,
-  password: String
+  password: String,
+  googleId: String,
+  predictions: [
+    {
+      gender: String,
+      age: String,
+      smoking: String,
+      betel: String,
+      alcohol: String,
+      bad_breath: String,
+      sudden_bleeding: String,
+      read_white_patch: String,
+      neck_lump: String,
+      pain: String,
+      numbness: String,
+      burning_sessation: String,
+      painless_ulceration: String,
+      sawallowing_difficulty: String,
+      loss_appetite: String,
+      predictionResult: String
+    }
+  ]
 });
+
+// const userSchema = new mongoose.Schema( {
+//   name: String,
+//   username: String,
+//   password: String
+// });
 
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
@@ -49,12 +76,6 @@ passport.use(User.createStrategy());
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
-
-// passport.deserializeUser(function(id, done) {
-//   User.findById(id, function(err, user) {
-//     done(err, user);
-//   });
-// });
 
 passport.deserializeUser(async function(id, done) {
   try {
@@ -79,24 +100,9 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-// app.use(session({
-//   secret: "MyStrongSecretPassword",
-//   resave: false,
-//   saveUninitialized: false
-// }));
-//
-//
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-// app.get("/", (req, res) => {
-//   res.render("home");
-// });
-
 app.get("/", (req, res) => {
   console.log("Currently not developed");
 });
-
 
 
 app.get("/auth/google", (req, res) => {
@@ -109,6 +115,46 @@ app.get("/auth/google/secret",
   function(req, res) {
     res.redirect("/home");
   });
+
+// app.get("/auth/google/secret",
+//   passport.authenticate("google", { failureRedirect: "/login" }),
+//   async function(req, res) {
+//     try {
+//       const profile = req.user;
+//
+//       const user = await User.findOne({ googleId: profile.id });
+//
+//       if (user) {
+//         res.redirect("/login");
+//       } else {
+//         res.redirect("/home");
+//       }
+//     } catch (err) {
+//       console.error("Error checking if user exists:", err);
+//       res.redirect("/login");
+//     }
+//   });
+
+// app.get("/auth/google/secret",
+//   passport.authenticate("google", { failureRedirect: "/login" }),
+//   async function(req, res) {
+//     try {
+//       const profile = req.user;
+//
+//       // Find or create the user based on the Google ID
+//       const user = await User.findOrCreate({ googleId: profile.id }, function(err, user) {
+//         return user;
+//       });
+//
+//       res.redirect("/home");
+//     } catch (err) {
+//       console.error("Error finding or creating user:", err);
+//       res.redirect("/login");
+//     }
+//   });
+
+
+
 
 app.get("/login", (req, res) => {
   res.render("login");
@@ -150,17 +196,56 @@ app.get("/doctors", (req, res) => {
   }
 });
 
-// app.get("/predict", (req, res) => {
-//   if (req.isAuthenticated()) {
-//     res.render("predict", { pred: "" });
-//   } else {
-//     res.redirect("/login");
-//   }
+app.get("/predict", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.render("predict", { pred: "" });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+// app.get("/predict", (req, res, next) => {
+//   res.render("predict", { pred: "" });
 // });
 
-app.get("/predict", (req, res, next) => {
-  res.render("predict", { pred: "" });
+// app.get("/results", (req, res) => {
+//   // Assuming you have the logged-in user available in the request object
+//   const user = req.user;
+//
+//   // Render the table page and pass the user object to it
+// res.render('results', { user: { predictions: userPredictions } });
+//
+// });
+
+// Route to render the results page
+// app.get('/results', (req, res) => {
+//   // Ensure the user is logged in before rendering the results
+//   if (!req.isAuthenticated()) {
+//     return res.redirect('/login'); // Redirect to login if not authenticated
+//   }
+//
+//   // Render the results.ejs template with the user's predictions data
+//   // console.log(locals.user);
+//   res.render('results', { user: res.locals.user });
+// });
+
+// Route to render the results page
+app.get('/results', async (req, res) => {
+  try {
+    if (!req.isAuthenticated()) {
+      return res.redirect('/login');
+    }
+
+    const user = await User.findById(req.user._id);
+
+    res.render('results', { user });
+  } catch (error) {
+    console.error('Error loading user data:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
+
 
 
 app.get("/logout", (req, res, next) => {
@@ -236,6 +321,36 @@ app.post("/login", (req, res) => {
 });
 
 
+app.post('/delete-prediction/:predictionId', async (req, res) => {
+  if (req.isAuthenticated()) {
+    const predictionId = req.params.predictionId;
+
+    try {
+      const userId = req.user._id;
+      const user = await User.findById(userId);
+
+      const predictionIndex = user.predictions.findIndex(pred => pred._id.toString() === predictionId);
+      if (predictionIndex !== -1) {
+        user.predictions.splice(predictionIndex, 1); 
+        await user.save();
+      } else {
+        console.error('Prediction not found for deletion');
+      }
+
+      res.redirect('/results');
+    } catch (error) {
+      console.error('Error deleting prediction:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  } else {
+    res.redirect('/login');
+  }
+});
+
+
+
+
+
 
 // app.post("/login", async (req, res) => {
 //
@@ -308,6 +423,31 @@ try {
     } else {
       predMessage = `You have a low chance of Oral Cancer, the probability is ${probabilityPercentage}%`;
     }
+
+
+    // Save prediction details to the database
+   const predictionDetails = {
+     gender: req.body.GENDER,
+     age: req.body.AGE,
+     smoking: req.body.SMOKING,
+     betel: req.body.BETEL,
+     alcohol: req.body.ALCOHOL,
+     bad_breath: req.body.BAD_BREATH,
+     sudden_bleeding: req.body.SUDDEN_BLEEDING,
+     read_white_patch: req.body.READ_WHITE_PATCH,
+     neck_lump: req.body.NECK_LUMP,
+     pain: req.body.PAIN,
+     numbness: req.body.NUMBNESS,
+     burning_sessation: req.body.BURNING_SENSATION,
+     painless_ulceration: req.body.PAINLESS_ULCERATION,
+     sawallowing_difficulty: req.body.SWALLOWING_DIFFICULTY,
+     loss_appetite: req.body.LOSS_APPETITE,
+     predictionResult: probabilityPercentage + "%"
+   };
+
+
+    req.user.predictions.push(predictionDetails);
+    await req.user.save();
 
     res.render("predict", { pred: predMessage });
 

@@ -1,0 +1,66 @@
+<%- include("partials/header"); -%>
+
+<table class="table table-hover table-start">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col" class="th-td-style">ID</th>
+      <th scope="col" class="th-td-style">Gender</th>
+      <th scope="col" class="th-td-style">Age</th>
+      <th scope="col" class="th-td-style">Smoke</th>
+      <th scope="col" class="th-td-style">Betel</th>
+      <th scope="col" class="th-td-style">Alcohol</th>
+      <th scope="col" class="th-td-style">Bad breath</th>
+      <th scope="col" class="th-td-style">Sudden bleeding</th>
+      <th scope="col" class="th-td-style">Read or white patches</th>
+      <th scope="col" class="th-td-style">Neck lump</th>
+      <th scope="col" class="th-td-style">Pain</th>
+      <th scope="col" class="th-td-style">Numbness</th>
+      <th scope="col" class="th-td-style">Burning sensation</th>
+      <th scope="col" class="th-td-style">Painless Ulceration</th>
+      <th scope="col" class="th-td-style">Swallowing difficulty</th>
+      <th scope="col" class="th-td-style">Loss appetite</th>
+      <th scope="col" >Probability</th>
+    </tr>
+  </thead>
+
+
+  <% console.log("User Object:", user); %>
+  <tbody>
+    <% if (user && user.predictions) { %>
+    <% for (let i = 0; i < user.predictions.length; i++) { %>
+      <tr>
+        <th scope="row" class="th-td-style"><%= i + 1 %></th>
+        <td class="th-td-style"><%= user.predictions[i].gender %></td>
+        <td class="th-td-style"><%= user.predictions[i].age %></td>
+        <td class="th-td-style"><%= user.predictions[i].smoking %></td>
+        <td class="th-td-style"><%= user.predictions[i].betel %></td>
+        <td class="th-td-style"><%= user.predictions[i].alcohol %></td>
+        <td class="th-td-style"><%= user.predictions[i].bad_breath %></td>
+        <td class="th-td-style"><%= user.predictions[i].sudden_bleeding %></td>
+        <td class="th-td-style"><%= user.predictions[i].read_white_patch %></td>
+        <td class="th-td-style"><%= user.predictions[i].neck_lump %></td>
+        <td class="th-td-style"><%= user.predictions[i].pain %></td>
+        <td class="th-td-style"><%= user.predictions[i].numbness %></td>
+        <td class="th-td-style"><%= user.predictions[i].burning_sessation %></td>
+        <td class="th-td-style"><%= user.predictions[i].painless_ulceration %></td>
+        <td class="th-td-style"><%= user.predictions[i].sawallowing_difficulty %></td>
+        <td class="th-td-style"><%= user.predictions[i].loss_appetite %></td>
+        <td class="th-td-style"><%= user.predictions[i].predictionResult %></td>
+
+        <td class="th-td-style">
+          <form action="/delete-prediction/<%= user.predictions[i]._id %>" method="post">
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </td>
+
+      </tr>
+    <% } %>
+    <% } else { %>
+      <tr>
+        <td colspan="17">No predictions available</td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<%- include("partials/footer"); -%>

@@ -32,6 +32,16 @@
     margin-bottom: 20px;
   }
 
+  .table-start{
+    margin-top: 100px;
+  }
+
   .footer-text{
+    text-align: center;
+  }
+
+  .th-td-style{
+    border: 1px solid #ddd;
+    padding: 8px;
     text-align: center;
   }
