@@ -1,6 +1,13 @@
 <%- include("partials/loginsHeader"); -%>
 
+<% if (error) { %>
+ <div class="alert alert-danger alert-container" role="alert">
+   <%= error %>
+ </div>
+<% } %>
+
 <div class="form-container">
+
   <div class="login-form">
     <form action="/login" method="POST">
       <h3>Login Now</h3>

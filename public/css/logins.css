@@ -85,3 +85,8 @@
 .form-container .social-button:hover {
    width: 300px;
 }
+
+.alert-container{
+  margin-bottom: 0px;
+  text-align: center;
+}

@@ -1,6 +1,15 @@
 <%- include("partials/loginsHeader"); -%>
 
+  <% if (errorMessage) { %>
+    <div class="alert alert-danger alert-container" role="alert">
+      <%= errorMessage %>
+    </div>
+  <% } %>
+
+
+
 <div class="form-container">
+
   <div class="login-form">
     <form id="registrationForm" action="/register" method="POST">
       <h3>Register Now</h3>

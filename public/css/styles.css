@@ -40,6 +40,27 @@
     text-align: center;
   }
 
+  .table-start tbody td:nth-child(2),
+  .table-start thead th:nth-child(1),
+  .table-start thead th:nth-child(2),
+  .table-start thead th:nth-child(3),
+  .table-start thead th:nth-child(4),
+  .table-start thead th:nth-child(5),
+  .table-start thead th:nth-child(6),
+  .table-start thead th:nth-child(7),
+  .table-start thead th:nth-child(8),
+  .table-start thead th:nth-child(9),
+  .table-start thead th:nth-child(10),
+  .table-start thead th:nth-child(11),
+  .table-start thead th:nth-child(12),
+  .table-start thead th:nth-child(13),
+  .table-start thead th:nth-child(14),
+  .table-start thead th:nth-child(15),
+  .table-start thead th:nth-child(16),
+  .table-start thead th:nth-child(17){
+    vertical-align: top;
+  }
+
   .th-td-style{
     border: 1px solid #ddd;
     padding: 8px;

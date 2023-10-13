@@ -157,11 +157,12 @@ app.get("/auth/google/secret",
 
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  res.render("login",  { error: "" });
 });
 
 app.get("/register", (req, res) => {
-  res.render("register");
+  // res.render("register");
+  res.render("register", { errorMessage: "" });
 });
 
 app.get("/home", (req, res) => {
@@ -257,19 +258,56 @@ app.get("/logout", (req, res, next) => {
   });
 });
 
-app.post("/register", (req, res) => {
+// app.post("/register", async (req, res) => {
+//
+//   try {
+//
+//       const existingUser = await User.findOne({ username: req.body.username });
+//
+//       if (existingUser) {
+//         return res.render("register", { errorMessage: "User with this email already exists" });
+//       }
+//
+//     User.register({name: req.body.name, username: req.body.username}, req.body.cpassword, function(err, user){
+//       if(err){
+//         console.log(err);
+//         res.redirect("/register");
+//       }else{
+//         passport.authenticate("local")(req, res, function(){
+//           res.redirect("/home");
+//         });
+//       }
+//     });
+//   }catch{
+//     console.error('Error during registration:', error);
+//     res.status(500).send('Internal Server Error');
+//   }
+// });
 
-  User.register({name: req.body.name, username: req.body.username}, req.body.cpassword, function(err, user){
-    if(err){
-      console.log(err);
-      res.redirect("/register");
-    }else{
-      passport.authenticate("local")(req, res, function(){
-        res.redirect("/home");
-      });
+app.post("/register", async (req, res) => {
+  try {
+    const existingUser = await User.findOne({ username: req.body.username });
+
+    if (existingUser) {
+      return res.render("register", { errorMessage: "⚠️ You are already registered, please login" });
     }
-  });
+
+    User.register({ name: req.body.name, username: req.body.username }, req.body.cpassword, function (err, user) {
+      if (err) {
+        console.log(err);
+        res.redirect("/register", { errorMessage: "" });
+      } else {
+        passport.authenticate("local")(req, res, function () {
+          res.redirect("/home");
+        });
+      }
+    });
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
 
 // app.post("/login", (req, res) => {
 //
@@ -303,13 +341,13 @@ app.post("/login", (req, res) => {
     }
 
     if (!user) {
-      return res.render("login", { error: "Invalid username or password" });
+      return res.render("login", { error: "⚠️ You enterd credential are invalid" });
     }
 
     req.login(user, (err) => {
       if (err) {
         console.log(err);
-        return res.redirect("/login");
+        return res.redirect("/login", { error: "" });
       }else{
         res.redirect("/home");
       }
@@ -331,7 +369,7 @@ app.post('/delete-prediction/:predictionId', async (req, res) => {
 
       const predictionIndex = user.predictions.findIndex(pred => pred._id.toString() === predictionId);
       if (predictionIndex !== -1) {
-        user.predictions.splice(predictionIndex, 1); 
+        user.predictions.splice(predictionIndex, 1);
         await user.save();
       } else {
         console.error('Prediction not found for deletion');
@@ -449,7 +487,8 @@ try {
     req.user.predictions.push(predictionDetails);
     await req.user.save();
 
-    res.render("predict", { pred: predMessage });
+    res.render("predict", { pred: predMessage, probabilityPercentage: probabilityPercentage });
+
 
     console.log('Response sent:', probabilityPercentage);
   } catch (error) {
