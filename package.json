@@ -4,13 +4,14 @@
   "description": "This project is Machine Learning cancer prediction system.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Himasha Rodrigo",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
+    "chai": "^4.3.10",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
@@ -26,5 +27,11 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^8.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "passport-mock-strategy": "^2.0.0",
+    "sinon": "^16.1.0",
+    "supertest": "^6.3.3"
   }
 }
