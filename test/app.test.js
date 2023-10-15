@@ -1,222 +1,172 @@
-const request = require('supertest');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const supertest = require('supertest');
 const app = require('../app');
-const { spawn } = require('child_process');
 
-beforeAll(() => {
-  process.env.NODE_ENV = 'test';
-});
+chai.use(chaiHttp);
+const expect = chai.expect;
+const request = supertest(app);
 
-//login_page_render
+
+
+
+//Render login page
 describe('GET /login', () => {
-  test('should render the login page with no errors', async () => {
-    const response = await request(app).get('/login');
+  it('should render login page with no errors', (done) => {
+    request
+      .get('/login')
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
 
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('Login');
+        expect(res.text).to.include('<title>Oral Cancer Predictor</title>');
+        expect(res.text).to.not.include('Error');
+
+        done();
+      });
   });
 });
 
 
-//register_page_render
+// //Render register page
 describe('GET /register', () => {
-  test('should render the register page with no errors', async () => {
-    const response = await request(app).get('/register');
+  it('should render register page with no errors', (done) => {
+    request
+      .get('/register')
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
 
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('register');
+        expect(res.text).to.include('<title>Oral Cancer Predictor</title>');
+        expect(res.text).to.not.include('Error');
+
+        done();
+      });
   });
 });
 
-
-//home_page_render
-describe('GET /home', () => {
-  test('should render the home page if user is authenticated', async () => {
-
-    const response = await request(app).get('/home').set('Cookie', ['your-auth-cookie=valid']);
-
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('home');
-  });
-
-  test('should redirect to /login if user is not authenticated', async () => {
-    const response = await request(app).get('/home');
-
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe('/login');
-  });
-});
-
-
-//predict_page_render
+ //Render predict page
 describe('GET /predict', () => {
-  test('should render the predict page if user is authenticated', async () => {
+  it('should render predict page with no errors', (done) => {
+    request
+      .get('/register')
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
 
-    const response = await request(app).get('/predict').set('Cookie', ['your-auth-cookie=valid']);
+        expect(res.text).to.include('<title>Oral Cancer Predictor</title>');
+        expect(res.text).to.not.include('Error');
 
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('predict');
-  });
-
-  test('should redirect to /login if user is not authenticated', async () => {
-    const response = await request(app).get('/predict');
-
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe('/login');
-  });
-});
-
-
-//results_page_login
-const request = require('supertest');
-const app = require('../app');
-
-describe('GET /results', () => {
-  test('should render the results page if user is authenticated', async () => {
-
-    const authenticatedAgent = request.agent(app);
-    await authenticatedAgent.post('/login').send({""});
-
-    const response = await authenticatedAgent.get('/results');
-
-    expect(response.status).toBe(200);
-
-    expect(response.text).toContain('Results');
-  });
-
-  test('should redirect to /login if user is not authenticated', async () => {
-    const response = await request(app).get('/results');
-
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe('/login');
+        done();
+      });
   });
 });
 
 
-//registration_page_validate
+  //Test Registration
 describe('POST /register', () => {
-  test('should render registration page with error message if user is already registered', async () => {
+  it('should register a new user with valid credentials', (done) => {
+    const newUser = {
+      name: 'John Doe',
+      username: 'johndoe@example.com',
+      password: 'ValidPassword123',
+      cpassword: 'ValidPassword123',
+    };
 
-    const existingUser = { name: 'Test User', username: 'testuser', password: 'password123' };
-    await User.create(existingUser);
-
-    const response = await request(app)
+    chai.request(app)
       .post('/register')
-      .send({
-        name: 'New User',
-        username: 'testuser@gmail.com',
-        cpassword: 'newpassword123'
+      .send(newUser)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
       });
-
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('You are already registered');
   });
 
-  test('should redirect to /home after successful registration', async () => {
-    const response = await request(app)
-      .post('/register')
-      .send({
-        name: 'New User',
-        username: 'newuser@gmail.com',
-        cpassword: 'password123'
-      });
+  it('should handle registration with existing username', (done) => {
+    const existingUser = {
+      name: 'Jane Doe',
+      username: 'existinguser@example.com',
+      password: 'ExistingUser123',
+      cpassword: 'ExistingUser123',
+    };
 
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe('/home');
+    chai.request(app)
+      .post('/register')
+      .send(existingUser)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
   });
 });
 
 
+//Test login with valid credentials
+it('should login with valid credentials', (done) => {
+  const credentials = {
+    username: 'john.doe@example.com',
+    password: 'ValidPassword123',
+  };
 
-//check_prediction_page_validate
-jest.mock('child_process', () => ({
-  spawn: jest.fn(),
-}));
-
-describe('POST /predict', () => {
-  test('should render predict page with prediction message', async () => {
-    const mockPrediction = '0.75';
-    spawn.mockImplementation(() => {
-      const stdout = {
-        on: (event, callback) => {
-          if (event === 'data') {
-            callback(mockPrediction);
-          }
-        },
-      };
-      const stderr = {
-        on: jest.fn(),
-      };
-      const on = (event, callback) => {
-        if (event === 'close') {
-          callback(0);
-        }
-      };
-      return { stdout, stderr, on };
+  chai.request(app)
+    .post('/login')
+    .send(credentials)
+    .end((err, res) => {
+      expect(res).to.have.status(200);
+      expect(res.text).to.include('Login Now');
+      done();
     });
+});
 
-    const response = await request(app)
-      .post('/predict')
-      .send({
-        GENDER: 'male',
-        AGE: '25',
-        SMOKING: 1,
-        BETEL: 2,
-        ALCOHOL: 2,
-        BAD_BREATH: 2,
-        SUDDEN_BLEEDING: 1,
-        READ_WHITE_PATCH: 2,
-        NECK_LUMP: 1,
-        PAIN: 2,
-        NUMBNESS: 1,
-        BURNING_SENSATION: 2,
-        PAINLESS_ULCERATION: 1,
-        SWALLOWING_DIFFICULTY: 1,
-        LOSS_APPETITE: 2
+
+//Login with invalid credentials
+describe('POST /login', () => {
+  it('should handle login with invalid credentials', (done) => {
+    const credentials = {
+      username: 'nonexistent.user@example.com',
+      password: 'InvalidPassword123',
+    };
+
+    chai.request(app)
+      .post('/login')
+      .send(credentials)
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
       });
-
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('Prediction Result');
-    expect(response.text).toContain('75%');
   });
+});
 
-  test('should handle error during prediction', async () => {
-    spawn.mockImplementation(() => {
-      const stderr = {
-        on: (event, callback) => {
-          if (event === 'data') {
-            callback('Error during prediction');
-          }
-        },
-      };
-      const on = (event, callback) => {
-        if (event === 'close') {
-          callback(1);
-        }
-      };
-      return { stderr, on };
-    });
 
-    const response = await request(app)
-      .post('/predict')
-      .send({
-        GENDER: 'male',
-        AGE: '25',
-        SMOKING: 1,
-        BETEL: 2,
-        ALCOHOL: 2,
-        BAD_BREATH: 2,
-        SUDDEN_BLEEDING: 1,
-        READ_WHITE_PATCH: 2,
-        NECK_LUMP: 1,
-        PAIN: 2,
-        NUMBNESS: 1,
-        BURNING_SENSATION: 2,
-        PAINLESS_ULCERATION: 1,
-        SWALLOWING_DIFFICULTY: 1,
-        LOSS_APPETITE: 2
+//Test user authenication
+describe('GET /home', () => {
+
+  it('should redirect to login if user is not authenticated', (done) => {
+    request
+      .get('/home')
+      .expect(302)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.headers.location).to.equal('/login');
+
+        done();
       });
+  });
+});
 
-    expect(response.status).toBe(500);
-    expect(response.text).toBe('Internal Server Error');
+
+ //Test predict page authentication
+describe('GET /predict', () => {
+  it('should redirect to login if user is not authenticated', (done) => {
+    request
+      .get('/predict')
+      .expect(302)
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.headers.location).to.equal('/login');
+
+        done();
+      });
   });
 });

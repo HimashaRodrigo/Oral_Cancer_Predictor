@@ -8,13 +8,13 @@
       <h1 class="text-center">Let's Check Your Cancer Probability</h1>
 
       <div class="row">
-        <form action='/predict' method="post" class="col-md-8 offset-md-2">
+        <form action='/predict' method="post" onsubmit="return validateForm();" class="col-md-8 offset-md-2">
 
           <div class="form-row ro">
 
             <div class="form-group col-md-4">
               <label for="input1"><b>Give your Gender</b></label>
-              <select class="form-control" name="GENDER">
+              <select class="form-control" name="GENDER" required>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
               </select>
@@ -28,7 +28,7 @@
 
             <div class="form-group col-md-4">
               <label for="input3"><b>Do you smoke ?</b></label>
-              <select class="form-control" name="SMOKING">
+              <select class="form-control" name="SMOKING" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -36,7 +36,7 @@
 
             <div class="form-group col-md-4">
               <label for="input4"><b>Do you eat betel nuts ?</b></label>
-              <select class="form-control" name="BETEL">
+              <select class="form-control" name="BETEL" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -44,7 +44,7 @@
 
             <div class="form-group col-md-4">
               <label for="input5"><b>Do you use alcohol ?</b></label>
-              <select class="form-control" name="ALCOHOL">
+              <select class="form-control" name="ALCOHOL" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -52,7 +52,7 @@
 
             <div class="form-group col-md-4">
               <label for="input6"><b>Does your mouth smell bad ?</b></label>
-              <select class="form-control" name="BAD_BREATH">
+              <select class="form-control" name="BAD_BREATH" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -60,7 +60,7 @@
 
             <div class="form-group col-md-4">
               <label for="input7"><b>Does the mouth somtimes bleeding ?</b></label>
-              <select class="form-control" name="SUDDEN_BLEEDING">
+              <select class="form-control" name="SUDDEN_BLEEDING" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -68,7 +68,7 @@
 
             <div class="form-group col-md-4">
               <label for="input8"><b>Do you have red or white patches in your mouth ?</b></label>
-              <select class="form-control" name="READ_WHITE_PATCH">
+              <select class="form-control" name="READ_WHITE_PATCH" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -76,7 +76,7 @@
 
             <div class="form-group col-md-4">
               <label for="input9"><b>Do you have lumps in your neack ?</b></label>
-              <select class="form-control" name="NECK_LUMP">
+              <select class="form-control" name="NECK_LUMP" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -84,7 +84,7 @@
 
             <div class="form-group col-md-4">
               <label for="input10"><b>Do you somtimes feel pain in your mouth ?</b></label>
-              <select class="form-control" name="PAIN">
+              <select class="form-control" name="PAIN" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -92,7 +92,7 @@
 
             <div class="form-group col-md-4">
               <label for="input11"><b>Do you somtimes feel numbness in your mouth ?</b></label>
-              <select class="form-control" name="NUMBNESS">
+              <select class="form-control" name="NUMBNESS" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -100,7 +100,7 @@
 
             <div class="form-group col-md-4">
               <label for="input12"><b>Do you feel a burning sensation in your mouth ?</b></label>
-              <select class="form-control" name="BURNING_SENSATION">
+              <select class="form-control" name="BURNING_SENSATION" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -108,7 +108,7 @@
 
             <div class="form-group col-md-4">
               <label for="input13"><b>Do you have any painless ulcers ?</b></label>
-              <select class="form-control" name="PAINLESS_ULCERATION">
+              <select class="form-control" name="PAINLESS_ULCERATION" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -116,7 +116,7 @@
 
             <div class="form-group col-md-4">
               <label for="input14"><b>Do you suffer from swallowing difficulties ?</b></label>
-              <select class="form-control" name="SWALLOWING_DIFFICULTY">
+              <select class="form-control" name="SWALLOWING_DIFFICULTY" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -124,7 +124,7 @@
 
             <div class="form-group col-md-4">
               <label for="input15"><b>Have your appetite decreased significantly ?</b></label>
-              <select class="form-control" name="LOSS_APPETITE">
+              <select class="form-control" name="LOSS_APPETITE" required>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
               </select>
@@ -150,4 +150,30 @@
   </div>
 </div>
 
-<%- include("partials/footer"); -%>
+<footer class="d-flex flex-wrap justify-content-center align-items-center py-3 my-3 border-top position-static">
+  <span>&copy;Oral Cancer Predictor. All Rights Reserved</span>
+</footer>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<script>
+
+  function validateForm() {
+    var age = document.getElementById('input2').value;
+    if (isNaN(age) || age <= 0) {
+      alert('Please enter a valid age');
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+</script>
+
+</body>
+
+</html>

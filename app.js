@@ -13,6 +13,9 @@ const findOrCreate = require("mongoose-findorcreate");
 
 const app = express();
 
+//New code.................
+module.exports = app;
+
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -284,6 +287,7 @@ app.get("/logout", (req, res, next) => {
 //   }
 // });
 
+
 app.post("/register", async (req, res) => {
   try {
     const existingUser = await User.findOne({ username: req.body.username });
@@ -307,6 +311,8 @@ app.post("/register", async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
+
 
 
 // app.post("/login", (req, res) => {
