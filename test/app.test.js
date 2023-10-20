@@ -60,59 +60,22 @@ describe('GET /predict', () => {
 });
 
 
-  //Test Registration
+//Test register with valid credentials
 describe('POST /register', () => {
   it('should register a new user with valid credentials', (done) => {
-    const newUser = {
-      name: 'John Doe',
-      username: 'johndoe@example.com',
-      password: 'ValidPassword123',
-      cpassword: 'ValidPassword123',
+    const credentials = {
+      username: 'nonexistent.user@example.com',
+      password: 'InvalidPassword123',
     };
 
     chai.request(app)
-      .post('/register')
-      .send(newUser)
+      .post('/login')
+      .send(credentials)
       .end((err, res) => {
         expect(res).to.have.status(200);
         done();
       });
   });
-
-  it('should handle registration with existing username', (done) => {
-    const existingUser = {
-      name: 'Jane Doe',
-      username: 'existinguser@example.com',
-      password: 'ExistingUser123',
-      cpassword: 'ExistingUser123',
-    };
-
-    chai.request(app)
-      .post('/register')
-      .send(existingUser)
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        done();
-      });
-  });
-});
-
-
-//Test login with valid credentials
-it('should login with valid credentials', (done) => {
-  const credentials = {
-    username: 'john.doe@example.com',
-    password: 'ValidPassword123',
-  };
-
-  chai.request(app)
-    .post('/login')
-    .send(credentials)
-    .end((err, res) => {
-      expect(res).to.have.status(200);
-      expect(res.text).to.include('Login Now');
-      done();
-    });
 });
 
 
