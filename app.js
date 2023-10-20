@@ -8,12 +8,10 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-// const FacebookStrategy = require("passport-facebook").Strategy;
 const findOrCreate = require("mongoose-findorcreate");
 
 const app = express();
 
-//New code.................
 module.exports = app;
 
 app.use(express.static("public"));
@@ -33,7 +31,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb://localhost:27017/userDataBase", {useNewUrlParser:true});
+mongoose.connect("mongodb+srv://himasharodrigo1998:"+process.env.MONGODB_ADMIN_PASSWORD+"@cluster1.b2fyabw.mongodb.net/userDataBase", {useNewUrlParser:true});
 
 
 const userSchema = new mongoose.Schema({
@@ -62,12 +60,6 @@ const userSchema = new mongoose.Schema({
     }
   ]
 });
-
-// const userSchema = new mongoose.Schema( {
-//   name: String,
-//   username: String,
-//   password: String
-// });
 
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
@@ -104,7 +96,7 @@ passport.use(new GoogleStrategy({
 ));
 
 app.get("/", (req, res) => {
-  console.log("Currently not developed");
+  res.render("landing");
 });
 
 
@@ -119,52 +111,12 @@ app.get("/auth/google/secret",
     res.redirect("/home");
   });
 
-// app.get("/auth/google/secret",
-//   passport.authenticate("google", { failureRedirect: "/login" }),
-//   async function(req, res) {
-//     try {
-//       const profile = req.user;
-//
-//       const user = await User.findOne({ googleId: profile.id });
-//
-//       if (user) {
-//         res.redirect("/login");
-//       } else {
-//         res.redirect("/home");
-//       }
-//     } catch (err) {
-//       console.error("Error checking if user exists:", err);
-//       res.redirect("/login");
-//     }
-//   });
-
-// app.get("/auth/google/secret",
-//   passport.authenticate("google", { failureRedirect: "/login" }),
-//   async function(req, res) {
-//     try {
-//       const profile = req.user;
-//
-//       // Find or create the user based on the Google ID
-//       const user = await User.findOrCreate({ googleId: profile.id }, function(err, user) {
-//         return user;
-//       });
-//
-//       res.redirect("/home");
-//     } catch (err) {
-//       console.error("Error finding or creating user:", err);
-//       res.redirect("/login");
-//     }
-//   });
-
-
-
 
 app.get("/login", (req, res) => {
   res.render("login",  { error: "" });
 });
 
 app.get("/register", (req, res) => {
-  // res.render("register");
   res.render("register", { errorMessage: "" });
 });
 
@@ -208,31 +160,6 @@ app.get("/predict", (req, res) => {
   }
 });
 
-// app.get("/predict", (req, res, next) => {
-//   res.render("predict", { pred: "" });
-// });
-
-// app.get("/results", (req, res) => {
-//   // Assuming you have the logged-in user available in the request object
-//   const user = req.user;
-//
-//   // Render the table page and pass the user object to it
-// res.render('results', { user: { predictions: userPredictions } });
-//
-// });
-
-// Route to render the results page
-// app.get('/results', (req, res) => {
-//   // Ensure the user is logged in before rendering the results
-//   if (!req.isAuthenticated()) {
-//     return res.redirect('/login'); // Redirect to login if not authenticated
-//   }
-//
-//   // Render the results.ejs template with the user's predictions data
-//   // console.log(locals.user);
-//   res.render('results', { user: res.locals.user });
-// });
-
 // Route to render the results page
 app.get('/results', async (req, res) => {
   try {
@@ -250,8 +177,6 @@ app.get('/results', async (req, res) => {
 });
 
 
-
-
 app.get("/logout", (req, res, next) => {
   req.logout((err)=> {
     if (err) {
@@ -260,32 +185,6 @@ app.get("/logout", (req, res, next) => {
     res.redirect('/login');
   });
 });
-
-// app.post("/register", async (req, res) => {
-//
-//   try {
-//
-//       const existingUser = await User.findOne({ username: req.body.username });
-//
-//       if (existingUser) {
-//         return res.render("register", { errorMessage: "User with this email already exists" });
-//       }
-//
-//     User.register({name: req.body.name, username: req.body.username}, req.body.cpassword, function(err, user){
-//       if(err){
-//         console.log(err);
-//         res.redirect("/register");
-//       }else{
-//         passport.authenticate("local")(req, res, function(){
-//           res.redirect("/home");
-//         });
-//       }
-//     });
-//   }catch{
-//     console.error('Error during registration:', error);
-//     res.status(500).send('Internal Server Error');
-//   }
-// });
 
 
 app.post("/register", async (req, res) => {
@@ -311,29 +210,6 @@ app.post("/register", async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-
-
-
-
-// app.post("/login", (req, res) => {
-//
-//   const user = new User({
-//     username: req.body.username,
-//     password: req.body.password
-//   });
-//
-//   req.login(user, (err) => {
-//     if(err){
-//       console.log(err);
-//     }else if(user){
-//       passport.authenticate("local") (req, res, () => {
-//         res.redirect("/home");
-//       });
-//     } else if(!user){
-//       res.redirect("/login");
-//     }
-//   });
-// });
 
 app.post("/login", (req, res) => {
   const user = new User({
@@ -391,31 +267,6 @@ app.post('/delete-prediction/:predictionId', async (req, res) => {
   }
 });
 
-
-
-
-
-
-// app.post("/login", async (req, res) => {
-//
-// });
-
-
-// app.get("/diagnosis", (req, res) => {
-//   res.render("diagnosis");
-// });
-//
-// app.get("/consultancy", (req, res) => {
-//   res.render("consultancy");
-// });
-//
-// app.get("/doctors", (req, res) => {
-//   res.render("doctors");
-// });
-//
-// app.get("/predict", (req, res) => {
-//     res.render("predict", { pred: "" });
-// });
 
 app.post("/predict", async (req, res) => {
 

@@ -7,9 +7,6 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 const request = supertest(app);
 
-
-
-
 //Render login page
 describe('GET /login', () => {
   it('should render login page with no errors', (done) => {
@@ -28,7 +25,7 @@ describe('GET /login', () => {
 });
 
 
-// //Render register page
+//Render register page
 describe('GET /register', () => {
   it('should render register page with no errors', (done) => {
     request
@@ -149,6 +146,23 @@ describe('GET /home', () => {
         if (err) return done(err);
 
         expect(res.headers.location).to.equal('/login');
+
+        done();
+      });
+  });
+});
+
+
+describe('POST /predict', () => {
+  it('should Prediction results sucessfully indicated', (done) => {
+    request
+      .get('/register')
+      .expect(200)
+      .end((err, res) => {
+        if (err) return done(err);
+
+        expect(res.text).to.include('<title>Oral Cancer Predictor</title>');
+        expect(res.text).to.not.include('Error');
 
         done();
       });
